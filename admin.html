@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SÜKARA | Admin</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #F8F7F2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 40px 32px;
+      border-radius: 22px;
+      box-shadow: 0 15px 50px rgba(36, 74, 61, 0.10);
+      text-align: center;
+    }
+
+    .logo {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      color: #244A3D;
+      font-size: 27px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      text-align: right;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      color: #244A3D;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #e3e9e4;
+      border-radius: 11px;
+      outline: none;
+      font-size: 14px;
+      direction: ltr;
+      text-align: left;
+      background: #fafbf9;
+    }
+
+    input:focus {
+      border-color: #477966;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 11px;
+      background: #244A3D;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background: #477966;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 17px;
+      font-size: 13px;
+      color: #b43d3d;
+      min-height: 22px;
+    }
+
+    .footer {
+      margin-top: 25px;
+      color: #999;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card">
+    <img src="images/logo.png.jpg" class="logo" alt="Sukara Logo">
+
+    <h1>SÜKARA</h1>
+    <p class="subtitle">لوحة تحكم صاحب الكافيه</p>
+
+    <form id="loginForm">
+
+      <div class="input-group">
+        <label for="email">البريد الإلكتروني</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="Email Address"
+          required
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="password">كلمة المرور</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        >
+      </div>
+
+      <button type="submit" id="loginBtn">
+        تسجيل الدخول
+      </button>
+
+      <p id="message"></p>
+    </form>
+
+    <p class="footer">SÜKARA Café © 2026</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://guklbwfbtwcixqdoekei.supabase.co";
+
+    const SUPABASE_KEY = "sb_publishable_hR_LlXa0mD_CZcrwW5RM0w_dUQXdK9e";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const message = document.getElementById("message");
+
+    // التحقق من وجود جلسة تسجيل دخول سابقة
+    async function checkSession() {
+      const { data: { session }, error } =
+        await supabaseClient.auth.getSession();
+
+      if (error) {
+        console.error("Session Error:", error);
+        return;
+      }
+
+      if (session) {
+        window.location.replace("dashboard.html");
+      }
+    }
+
+    checkSession();
+
+    // تسجيل الدخول
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "جاري تسجيل الدخول...";
+      message.textContent = "";
+
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) throw error;
+
+        message.style.color = "#477966";
+        message.textContent = "تم تسجيل الدخول بنجاح!";
+
+        loginBtn.textContent = "جاري فتح لوحة التحكم...";
+
+        window.location.replace("dashboard.html");
+
+      } catch (error) {
+        console.error("Login Error:", error);
+
+        message.style.color = "#b43d3d";
+        message.textContent =
+          "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = "تسجيل الدخول";
+      }
+    });
+  </script>
+
+</body>
+</html>

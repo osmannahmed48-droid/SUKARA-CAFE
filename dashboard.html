@@ -1,0 +1,989 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SÜKARA | Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background: #F8F7F2;
+      color: #244A3D;
+      min-height: 100vh;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    .topbar {
+      background: #244A3D;
+      color: white;
+      padding: 16px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 4px;
+    }
+
+    .brand h1 {
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+
+    .brand p {
+      font-size: 11px;
+      color: #c5d6cb;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-actions button {
+      border: 1px solid rgba(255,255,255,.25);
+      background: transparent;
+      color: white;
+      padding: 9px 15px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .top-actions button:hover {
+      background: #477966;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1450px;
+      margin: 35px auto;
+    }
+
+    .welcome {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .welcome h2 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .date {
+      color: #477966;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 23px;
+      border-radius: 16px;
+      box-shadow: 0 5px 22px rgba(36,74,61,.05);
+      border: 1px solid #edf0eb;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 17px;
+    }
+
+    .stat-top span {
+      color: #777;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      background: #edf4ef;
+      color: #477966;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .stat-card h3 {
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .stat-card small {
+      color: #999;
+      font-size: 11px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-header h2 {
+      font-size: 21px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filters select,
+    .refresh-btn {
+      border: 1px solid #e1e8e1;
+      background: white;
+      color: #244A3D;
+      padding: 10px 14px;
+      border-radius: 9px;
+      outline: none;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .refresh-btn {
+      background: #244A3D;
+      color: white;
+      border: none;
+    }
+
+    .refresh-btn:hover {
+      background: #477966;
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .order-card {
+      background: white;
+      border: 1px solid #edf0eb;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 5px 20px rgba(36,74,61,.04);
+    }
+
+    .order-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f1ed;
+    }
+
+    .order-number {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .order-date {
+      color: #999;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-new {
+      background: #fff3d9;
+      color: #a87516;
+    }
+
+    .status-preparing {
+      background: #e7efff;
+      color: #3865ad;
+    }
+
+    .status-completed {
+      background: #e3f4e8;
+      color: #32804b;
+    }
+
+    .status-cancelled {
+      background: #fde8e8;
+      color: #bd4444;
+    }
+
+    .order-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 17px 0;
+    }
+
+    .info-item {
+      font-size: 13px;
+      color: #777;
+    }
+
+    .info-item strong {
+      display: block;
+      color: #244A3D;
+      margin-top: 5px;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .items-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .order-items {
+      background: #fafbf8;
+      padding: 12px 15px;
+      border-radius: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 17px;
+    }
+
+    .total {
+      font-size: 17px;
+      font-weight: 800;
+      color: #244A3D;
+    }
+
+    .status-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-control label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .status-control select {
+      padding: 8px 12px;
+      border: 1px solid #e1e8e1;
+      border-radius: 8px;
+      color: #244A3D;
+      background: white;
+      outline: none;
+      font-size: 12px;
+    }
+
+    .empty-state {
+      background: white;
+      padding: 55px 20px;
+      text-align: center;
+      border-radius: 16px;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 35px;
+      color: #a4bea7;
+      margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+      color: #244A3D;
+      margin-bottom: 7px;
+    }
+
+    #pageMessage {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+    }
+
+    @media(max-width: 850px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width: 600px) {
+      .container {
+        width: 92%;
+        margin: 25px auto;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-card h3 {
+        font-size: 21px;
+      }
+
+      .stat-top span {
+        font-size: 11px;
+      }
+
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+
+      .order-info {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .welcome h2 {
+        font-size: 21px;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+      }
+
+      .topbar {
+        padding: 13px 4%;
+      }
+
+      .top-actions button {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .order-card {
+        padding: 16px;
+      }
+
+      .section-header h2 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="images/logo.png.jpg" alt="Sukara">
+      <div>
+        <h1>SÜKARA</h1>
+        <p>ADMIN DASHBOARD</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="refreshBtn">
+        <i class="fa-solid fa-rotate"></i>
+        تحديث
+      </button>
+
+      <button id="logoutBtn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        تسجيل الخروج
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="welcome">
+      <div>
+        <h2>أهلاً بيك في سُــكَــــره 🌿</h2>
+        <p>تابع أوردرات الكافيه ومبيعاتك من مكان واحد.</p>
+      </div>
+
+      <div class="date" id="currentDate"></div>
+    </section>
+
+    <section class="stats">
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>أوردرات اليوم</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+        </div>
+        <h3 id="todayOrders">0</h3>
+        <small>كل الطلبات المسجلة اليوم</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>أوردرات جديدة</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-bell"></i>
+          </div>
+        </div>
+        <h3 id="newOrders">0</h3>
+        <small>طلبات في انتظار المراجعة</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>أوردرات مكتملة</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+        <h3 id="completedOrders">0</h3>
+        <small>الطلبات المكتملة اليوم</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>مبيعات اليوم</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+        </div>
+        <h3 id="todaySales">0 ج.م</h3>
+        <small>من الأوردرات المكتملة فقط</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>مبيعات الشهر</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+        </div>
+        <h3 id="monthSales">0 ج.م</h3>
+        <small>من بداية الشهر حتى الآن</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>إجمالي الأوردرات</span>
+          <div class="stat-icon">
+            <i class="fa-solid fa-box"></i>
+          </div>
+        </div>
+        <h3 id="allOrders">0</h3>
+        <small>كل الأوردرات المسجلة</small>
+      </div>
+
+    </section>
+
+    <section class="orders-section">
+
+      <div class="section-header">
+        <h2>إدارة الأوردرات</h2>
+
+        <div class="filters">
+          <select id="statusFilter">
+            <option value="all">كل الأوردرات</option>
+            <option value="new">جديد</option>
+            <option value="preparing">قيد التحضير</option>
+            <option value="completed">مكتمل</option>
+            <option value="cancelled">ملغي</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="pageMessage">جاري تحميل الأوردرات...</div>
+      <div class="orders-list" id="ordersList"></div>
+
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://guklbwfbtwcixqdoekei.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_hR_LlXa0mD_CZcrwW5RM0w_dUQXdK9e";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const ordersList = document.getElementById("ordersList");
+    const pageMessage = document.getElementById("pageMessage");
+
+    let allOrdersData = [];
+
+    const statusNames = {
+      new: "جديد",
+      preparing: "قيد التحضير",
+      completed: "مكتمل",
+      cancelled: "ملغي"
+    };
+
+    // حماية الصفحة والتحقق من الجلسة
+    async function checkAuth() {
+      const { data: { session }, error } =
+        await supabaseClient.auth.getSession();
+
+      if (error || !session) {
+        window.location.replace("admin.html");
+        return false;
+      }
+
+      const { data: { user }, error: userError } =
+        await supabaseClient.auth.getUser();
+
+      if (userError || !user) {
+        await supabaseClient.auth.signOut();
+        window.location.replace("admin.html");
+        return false;
+      }
+
+      return true;
+    }
+
+    // تنسيق المبالغ
+    function formatMoney(amount) {
+      return Number(amount || 0).toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      }) + " ج.م";
+    }
+
+    // منع إدخال HTML غير موثوق داخل الصفحة
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    // تنسيق التاريخ
+    function formatDate(date) {
+      return new Date(date).toLocaleString("ar-EG", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    // حساب الإحصائيات
+    function updateStats(orders) {
+      const now = new Date();
+
+      const todayOrders = orders.filter(order => {
+        const date = new Date(order.created_at);
+
+        return date.getFullYear() === now.getFullYear() &&
+          date.getMonth() === now.getMonth() &&
+          date.getDate() === now.getDate();
+      });
+
+      const monthOrders = orders.filter(order => {
+        const date = new Date(order.created_at);
+
+        return date.getFullYear() === now.getFullYear() &&
+          date.getMonth() === now.getMonth();
+      });
+
+      const completedToday = todayOrders.filter(
+        order => order.status === "completed"
+      );
+
+      const completedMonth = monthOrders.filter(
+        order => order.status === "completed"
+      );
+
+      const newCount = orders.filter(
+        order => order.status === "new"
+      ).length;
+
+      const todaySales = completedToday.reduce(
+        (sum, order) => sum + Number(order.total || 0), 0
+      );
+
+      const monthSales = completedMonth.reduce(
+        (sum, order) => sum + Number(order.total || 0), 0
+      );
+
+      document.getElementById("todayOrders").textContent =
+        todayOrders.length;
+
+      document.getElementById("newOrders").textContent =
+        newCount;
+
+      document.getElementById("completedOrders").textContent =
+        completedToday.length;
+
+      document.getElementById("todaySales").textContent =
+        formatMoney(todaySales);
+
+      document.getElementById("monthSales").textContent =
+        formatMoney(monthSales);
+
+      document.getElementById("allOrders").textContent =
+        orders.length;
+    }
+
+    // عرض المنتجات داخل الأوردر
+    function renderItems(items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return '<div class="item-row">لا توجد تفاصيل للمنتجات</div>';
+      }
+
+      return items.map(item => {
+        const name = escapeHTML(item.name || "منتج");
+        const quantity = Number(item.quantity || 0);
+        const price = Number(item.unit_price || 0);
+        const subtotal = Number.isFinite(Number(item.subtotal))
+          ? Number(item.subtotal)
+          : price * quantity;
+
+        return `
+          <div class="item-row">
+            <span>${name} × ${quantity}</span>
+            <strong>${formatMoney(subtotal)}</strong>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // إنشاء كارت الأوردر
+    function renderOrder(order) {
+      const status = statusNames[order.status] || "غير معروف";
+
+      const fulfillment =
+        order.fulfillment_type === "delivery"
+          ? "Delivery"
+          : "In Place";
+
+      const deliveryArea =
+        order.fulfillment_type === "delivery"
+          ? escapeHTML(order.delivery_area || "غير محدد")
+          : "—";
+
+      return `
+        <article class="order-card">
+
+          <div class="order-head">
+            <div>
+              <div class="order-number">
+                أوردر #${escapeHTML(order.id.slice(0, 8))}
+              </div>
+              <div class="order-date">
+                ${escapeHTML(formatDate(order.created_at))}
+              </div>
+            </div>
+
+            <span class="status status-${escapeHTML(order.status)}">
+              ${status}
+            </span>
+          </div>
+
+          <div class="order-info">
+
+            <div class="info-item">
+              اسم العميل
+              <strong>${escapeHTML(order.customer_name)}</strong>
+            </div>
+
+            <div class="info-item">
+              رقم التليفون
+              <strong dir="ltr">${escapeHTML(order.customer_phone)}</strong>
+            </div>
+
+            <div class="info-item">
+              نوع الطلب
+              <strong>${fulfillment}</strong>
+            </div>
+
+            <div class="info-item">
+              منطقة التوصيل
+              <strong>${deliveryArea}</strong>
+            </div>
+
+          </div>
+
+          <div class="items-title">تفاصيل الأوردر</div>
+
+          <div class="order-items">
+            ${renderItems(order.items)}
+          </div>
+
+          <div class="order-footer">
+
+            <div class="total">
+              الإجمالي: ${formatMoney(order.total)}
+            </div>
+
+            <div class="status-control">
+              <label>تغيير الحالة:</label>
+
+              <select
+                class="order-status-select"
+                data-id="${escapeHTML(order.id)}"
+                value="${escapeHTML(order.status)}"
+              >
+                <option value="new" ${order.status === "new" ? "selected" : ""}>
+                  جديد
+                </option>
+
+                <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>
+                  قيد التحضير
+                </option>
+
+                <option value="completed" ${order.status === "completed" ? "selected" : ""}>
+                  مكتمل
+                </option>
+
+                <option value="cancelled" ${order.status === "cancelled" ? "selected" : ""}>
+                  ملغي
+                </option>
+              </select>
+            </div>
+
+          </div>
+
+        </article>
+      `;
+    }
+
+    // عرض الأوردرات حسب الفلتر
+    function displayOrders() {
+      const filter = document.getElementById("statusFilter").value;
+
+      const filteredOrders = filter === "all"
+        ? allOrdersData
+        : allOrdersData.filter(order => order.status === filter);
+
+      if (filteredOrders.length === 0) {
+        ordersList.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-receipt"></i>
+            <h3>مفيش أوردرات هنا</h3>
+            <p>الأوردرات هتظهر هنا أول ما يتم تسجيلها.</p>
+          </div>
+        `;
+        return;
+      }
+
+      ordersList.innerHTML = filteredOrders
+        .map(renderOrder)
+        .join("");
+    }
+
+    // تحميل الأوردرات من Supabase
+    async function loadOrders() {
+      pageMessage.style.display = "block";
+      pageMessage.textContent = "جاري تحميل الأوردرات...";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("orders")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        allOrdersData = data || [];
+
+        updateStats(allOrdersData);
+        displayOrders();
+
+        pageMessage.style.display = "none";
+
+      } catch (error) {
+        console.error("Orders Error:", error);
+
+        pageMessage.style.display = "block";
+        pageMessage.textContent =
+          "حصلت مشكلة في تحميل الأوردرات. تأكد من صلاحيات Supabase.";
+      }
+    }
+
+    // تغيير حالة الأوردر
+    ordersList.addEventListener("change", async (event) => {
+      const select = event.target.closest(".order-status-select");
+
+      if (!select) return;
+
+      const orderId = select.dataset.id;
+      const newStatus = select.value;
+
+      select.disabled = true;
+
+      try {
+        const { error } = await supabaseClient
+          .from("orders")
+          .update({ status: newStatus })
+          .eq("id", orderId);
+
+        if (error) throw error;
+
+        const order = allOrdersData.find(
+          item => item.id === orderId
+        );
+
+        if (order) {
+          order.status = newStatus;
+        }
+
+        updateStats(allOrdersData);
+        displayOrders();
+
+      } catch (error) {
+        console.error("Update Error:", error);
+        alert("تعذر تحديث حالة الأوردر. راجع صلاحيات قاعدة البيانات.");
+        await loadOrders();
+      }
+    });
+
+    // تحديث الأوردرات
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      await loadOrders();
+    });
+
+    // فلترة الأوردرات
+    document.getElementById("statusFilter").addEventListener("change", () => {
+      displayOrders();
+    });
+
+    // تسجيل الخروج
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      const confirmed = confirm("هل أنت متأكد إنك عايز تسجل الخروج؟");
+
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        alert("حصلت مشكلة أثناء تسجيل الخروج.");
+        console.error(error);
+        return;
+      }
+
+      window.location.replace("admin.html");
+    });
+
+    // التاريخ الحالي
+    document.getElementById("currentDate").textContent =
+      new Date().toLocaleDateString("ar-EG", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+    // بدء تشغيل لوحة التحكم
+    let ordersRealtimeChannel = null;
+
+function subscribeToOrders() {
+  if (ordersRealtimeChannel) {
+    supabaseClient.removeChannel(ordersRealtimeChannel);
+  }
+
+  ordersRealtimeChannel = supabaseClient
+    .channel("orders-live-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "orders"
+      },
+      async (payload) => {
+        console.log("Order update received:", payload);
+
+        await loadOrders();
+      }
+    )
+    .subscribe((status) => {
+      console.log("Realtime status:", status);
+    });
+}
+
+async function initDashboard() {
+  const authenticated = await checkAuth();
+  if (!authenticated) return;
+
+  await loadOrders();
+  subscribeToOrders();
+}
+
+initDashboard();
+  </script>
+
+</body>
+</html>
