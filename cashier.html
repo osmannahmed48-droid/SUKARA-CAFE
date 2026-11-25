@@ -1,0 +1,1030 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SÜKARA | Cashier</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --green:#244a3d;
+  --green2:#477966;
+  --cream:#f8f7f2;
+  --line:#e8ece6;
+  --muted:#828982;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--cream);color:var(--green);
+  font-family:Cairo,sans-serif
+}
+body.modal-open{overflow:hidden}
+.top{
+  background:var(--green);color:white;padding:16px 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{
+  width:48px;height:48px;object-fit:contain;
+  background:white;border-radius:50%;padding:4px
+}
+.brand h1{margin:0;font-size:22px}
+.brand p{margin:0;color:#c5d6cb;font-size:11px}
+.actions{display:flex;gap:8px}
+.btn{
+  border:0;border-radius:9px;padding:10px 15px;
+  font:700 13px Cairo;cursor:pointer;transition:.2s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-light{background:white;color:var(--green)}
+.btn-outline{background:transparent;color:white;border:1px solid #ffffff55}
+.wrap{width:min(1200px,92%);margin:28px auto}
+.toolbar{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;margin-bottom:18px
+}
+.toolbar h2{margin:0;font-size:23px}
+.muted{color:var(--muted);font-size:13px}
+.tabs{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;margin-bottom:20px
+}
+.tab{
+  border:1px solid var(--line);background:white;color:var(--green);
+  border-radius:13px;padding:13px 10px;cursor:pointer;
+  font-family:Cairo,sans-serif;display:flex;align-items:center;
+  justify-content:center;gap:8px;font-size:14px;font-weight:800;
+  transition:.2s
+}
+.tab:hover{border-color:var(--green2)}
+.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.count{
+  min-width:25px;height:25px;padding:0 6px;border-radius:20px;
+  background:#edf2ed;color:var(--green);display:inline-flex;
+  align-items:center;justify-content:center;font-size:12px
+}
+.tab.active .count{background:white;color:var(--green)}
+.search-wrap{
+  position:relative;margin-bottom:20px
+}
+.search-wrap input{
+  width:100%;height:50px;border:1px solid var(--line);
+  border-radius:12px;padding:0 45px 0 45px;
+  font:600 14px Cairo;color:var(--green);
+  background:white;outline:none;transition:.2s
+}
+.search-wrap input:focus{
+  border-color:var(--green2);
+  box-shadow:0 0 0 3px #47796615
+}
+.search-icon{
+  position:absolute;right:16px;top:50%;
+  transform:translateY(-50%);font-size:18px
+}
+.clear-search{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  border:0;background:#edf2ed;color:var(--green);
+  border-radius:8px;width:28px;height:28px;
+  cursor:pointer;font-size:17px
+}
+.section-title{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-bottom:14px
+}
+.section-title h3{margin:0;font-size:19px}
+.orders{display:grid;gap:14px}
+.card{
+  background:#fff;border:1px solid var(--line);
+  border-radius:15px;padding:18px;
+  box-shadow:0 5px 20px #244a3d0a
+}
+.head,.foot{
+  display:flex;justify-content:space-between;
+  align-items:center;gap:12px;flex-wrap:wrap
+}
+.order-id{font-weight:800}
+.date{font-size:12px;color:var(--muted)}
+.pill{
+  border-radius:20px;padding:5px 12px;font-size:12px;
+  font-weight:800;background:#fff3d9;color:#a87516
+}
+.pill.preparing{background:#e7efff;color:#3865ad}
+.pill.completed{background:#e3f4e8;color:#32804b}
+.pill.cancelled{background:#fde8e8;color:#bd4444}
+.info{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;padding:16px 0;border-bottom:1px solid #f0f1ed
+}
+.info span{display:block;color:var(--muted);font-size:12px}
+.info strong{
+  display:block;margin-top:3px;font-size:13px;
+  overflow-wrap:anywhere
+}
+.items{
+  background:#fafbf8;border-radius:10px;padding:12px;
+  margin-top:12px;display:grid;gap:7px
+}
+.item{
+  display:flex;justify-content:space-between;
+  gap:10px;font-size:13px;color:#626b64
+}
+.foot{margin-top:14px}
+.total{font-weight:800;font-size:17px}
+.status{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap
+}
+.status select{
+  border:1px solid var(--line);border-radius:8px;
+  padding:8px;font:600 13px Cairo;color:var(--green);
+  background:white
+}
+.print{background:var(--green);color:white}
+.details-btn{
+  background:#edf2ed;color:var(--green);
+  border:1px solid #dfe8df
+}
+.empty{
+  background:white;border-radius:15px;padding:50px;
+  text-align:center;color:var(--muted)
+}
+.empty .empty-icon{font-size:35px;margin-bottom:8px}
+
+/* Login */
+#login{
+  position:fixed;inset:0;background:var(--cream);
+  display:grid;place-items:center;padding:20px;z-index:10
+}
+.loginbox{
+  width:min(390px,100%);background:white;
+  border:1px solid var(--line);border-radius:20px;
+  padding:28px;box-shadow:0 15px 50px #244a3d14;
+  text-align:center
+}
+.loginbox h2{margin:8px 0}
+.pin{
+  width:100%;text-align:center;letter-spacing:12px;
+  font-size:28px;padding:12px;border:1px solid var(--line);
+  border-radius:10px;margin:16px 0;direction:ltr
+}
+.loginbox button{width:100%;background:var(--green);color:white}
+.error{color:#b43d3d;font-size:13px;min-height:22px}
+.hidden{display:none!important}
+#notice{
+  position:fixed;bottom:18px;left:18px;
+  background:var(--green);color:white;
+  padding:12px 18px;border-radius:10px;
+  display:none;z-index:20
+}
+
+/* Details modal */
+.modal{
+  position:fixed;inset:0;z-index:50;
+  background:#10251dcc;backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+  display:none;align-items:center;justify-content:center;
+  padding:18px
+}
+.modal.show{display:flex}
+.modal-box{
+  width:min(650px,100%);max-height:90vh;overflow:auto;
+  background:#fff;border-radius:20px;
+  box-shadow:0 20px 70px #0003;
+  animation:modalIn .2s ease
+}
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(12px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.modal-head{
+  padding:20px 23px;background:var(--green);color:white;
+  display:flex;justify-content:space-between;
+  align-items:center;gap:12px
+}
+.modal-head h3{margin:0;font-size:18px}
+.close-modal{
+  border:0;background:#ffffff20;color:white;
+  width:35px;height:35px;border-radius:9px;
+  cursor:pointer;font-size:22px
+}
+.modal-content{padding:22px}
+.detail-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px
+}
+.detail-box{
+  padding:13px;background:#f8faf7;
+  border:1px solid #edf1eb;border-radius:11px
+}
+.detail-box span{
+  display:block;color:var(--muted);font-size:12px
+}
+.detail-box strong{
+  display:block;margin-top:5px;font-size:14px;
+  overflow-wrap:anywhere
+}
+.modal-section-title{
+  font-size:15px;font-weight:800;
+  margin:22px 0 10px
+}
+.detail-items{
+  border:1px solid var(--line);border-radius:12px;overflow:hidden
+}
+.detail-item{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:12px 14px;border-bottom:1px solid #edf0eb;
+  font-size:13px
+}
+.detail-item:last-child{border-bottom:0}
+.detail-item small{display:block;color:var(--muted);margin-top:3px}
+.detail-total{
+  margin-top:15px;padding:16px;border-radius:12px;
+  background:#edf3ee;display:flex;justify-content:space-between;
+  align-items:center;font-weight:800;font-size:17px
+}
+.modal-actions{
+  display:flex;gap:9px;flex-wrap:wrap;margin-top:20px
+}
+.modal-actions .btn{flex:1}
+
+/* Responsive */
+@media(max-width:700px){
+  .info{grid-template-columns:1fr 1fr}
+  .wrap{margin:20px auto}
+  .toolbar h2{font-size:19px}
+  .tabs{grid-template-columns:1fr 1fr}
+  .tab{font-size:12px;padding:11px 5px}
+  .modal{padding:10px}
+  .modal-content{padding:16px}
+  .modal-head{padding:16px}
+  .detail-grid{gap:8px}
+  .detail-box{padding:10px}
+  .detail-box strong{font-size:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <div class="brand">
+    <img src="./logo.png.jpg" alt="Sukara" onerror="this.style.display='none'">
+    <div>
+      <h1>SÜKARA</h1>
+      <p>CASHIER DASHBOARD</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-outline" id="refresh">تحديث</button>
+    <button class="btn btn-light" id="logout">تسجيل الخروج</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="toolbar">
+    <div>
+      <h2>طلبات الكاشير</h2>
+      <div class="muted" id="connection">في انتظار تسجيل الدخول</div>
+    </div>
+    <div class="muted" id="lastUpdate"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="new">
+      طلبات جديدة <span class="count" id="count-new">0</span>
+    </button>
+    <button class="tab" data-tab="preparing">
+      قيد التحضير <span class="count" id="count-preparing">0</span>
+    </button>
+    <button class="tab" data-tab="completed">
+      مكتملة <span class="count" id="count-completed">0</span>
+    </button>
+    <button class="tab" data-tab="cancelled">
+      ملغية <span class="count" id="count-cancelled">0</span>
+    </button>
+  </div>
+
+  <!-- البحث -->
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="ابحث برقم الأوردر أو اسم العميل أو رقم التليفون..."
+      autocomplete="off"
+    >
+    <button class="clear-search hidden" id="clearSearch" type="button">×</button>
+  </div>
+
+  <div class="section-title">
+    <h3 id="sectionTitle">الطلبات الجديدة</h3>
+    <span class="muted" id="sectionCount">0 طلب</span>
+  </div>
+
+  <div id="orders" class="orders">
+    <div class="empty">سجّل الدخول لعرض الطلبات</div>
+  </div>
+
+</main>
+
+<!-- Login -->
+<section id="login">
+  <form class="loginbox" id="loginForm">
+    <div style="font-size:38px">☕</div>
+    <h2>دخول الكاشير</h2>
+    <p class="muted">أدخل كود الدخول المكوّن من 4 أرقام</p>
+    <input
+      class="pin" id="pin" type="password"
+      inputmode="numeric" pattern="[0-9]{4}"
+      maxlength="4" placeholder="••••"
+      autocomplete="off" required
+    >
+    <div class="error" id="loginError"></div>
+    <button class="btn" type="submit" id="loginBtn">دخول</button>
+  </form>
+</section>
+
+<!-- Details modal -->
+<div class="modal" id="detailsModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">تفاصيل الطلب</h3>
+      <button class="close-modal" id="closeModal" aria-label="إغلاق">×</button>
+    </div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<div id="notice"></div>
+
+<script>
+"use strict";
+
+const SUPABASE_URL = "https://guklbwfbtwcixqdoekei.supabase.co";
+const API = `${SUPABASE_URL}/functions/v1/cashier`;
+const SESSION_KEY = "sukara_cashier_session";
+
+let token = sessionStorage.getItem(SESSION_KEY) || "";
+let knownIds = new Set();
+let firstLoad = true;
+let poller = null;
+let loadingOrders = false;
+let activeTab = "new";
+let allOrders = [];
+
+const $ = id => document.getElementById(id);
+
+const STATUS_INFO = {
+  new:{title:"الطلبات الجديدة",empty:"مفيش طلبات جديدة حاليًا",icon:"📥"},
+  preparing:{title:"الطلبات قيد التحضير",empty:"مفيش طلبات قيد التحضير حاليًا",icon:"👨‍🍳"},
+  completed:{title:"الطلبات المكتملة",empty:"مفيش طلبات مكتملة حاليًا",icon:"✅"},
+  cancelled:{title:"الطلبات الملغية",empty:"مفيش طلبات ملغية حاليًا",icon:"✖️"}
+};
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function money(v){
+  return Number(v || 0).toLocaleString("en-US",{
+    maximumFractionDigits:2
+  }) + " ج.م";
+}
+
+function statusName(s){
+  return ({
+    new:"جديد",preparing:"قيد التحضير",
+    completed:"مكتمل",cancelled:"ملغي"
+  })[s] || "غير معروف";
+}
+
+function orderNumber(id){
+  return String(id ?? "").slice(0,8);
+}
+
+function orderDate(value){
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? "غير محدد" : d.toLocaleString("ar-EG");
+}
+
+function itemSubtotal(i){
+  return Number(
+    i.subtotal ??
+    (Number(i.unit_price || 0) * Number(i.quantity || 0))
+  );
+}
+
+async function api(action,body={}){
+  const headers = {"Content-Type":"application/json"};
+  if(token) headers.Authorization = `Bearer ${token}`;
+
+  let res;
+  try{
+    res = await fetch(API,{
+      method:"POST",headers,
+      body:JSON.stringify({action,...body})
+    });
+  }catch{
+    throw new Error("تعذر الاتصال بالخادم. تحقق من الإنترنت.");
+  }
+
+  let data = {};
+  try{data = await res.json();}catch{}
+
+  if(!res.ok){
+    const error = new Error(data.error || `خطأ في الخادم (${res.status})`);
+    error.status = res.status;
+    error.data = data;
+    throw error;
+  }
+  return data;
+}
+
+function stopPolling(){
+  if(poller){clearInterval(poller);poller=null;}
+}
+
+function startPolling(){
+  stopPolling();
+  poller = setInterval(loadOrders,5000);
+}
+
+function beep(){
+  try{
+    const C = window.AudioContext || window.webkitAudioContext;
+    const c = new C();
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.frequency.value = 880;
+    g.gain.value = .12;
+    o.start();o.stop(c.currentTime + .22);
+    setTimeout(()=>c.close(),350);
+  }catch{}
+}
+
+function notifyNew(order){
+  beep();
+  $("notice").textContent = `طلب جديد وصل — #${orderNumber(order.id)}`;
+  $("notice").style.display = "block";
+  setTimeout(()=>$("notice").style.display="none",5000);
+
+  if("Notification" in window && Notification.permission==="granted"){
+    new Notification("طلب جديد من سُكَره",{
+      body:`طلب رقم ${orderNumber(order.id)} — ${order.customer_name || ""}`
+    });
+  }
+}
+
+/* Search */
+function getSearchValue(){
+  return $("searchInput").value.trim().toLowerCase();
+}
+
+function matchesSearch(o,query){
+  if(!query) return true;
+
+  const values = [
+    o.id,
+    orderNumber(o.id),
+    o.customer_name,
+    o.customer_phone
+  ].map(v=>String(v ?? "").toLowerCase());
+
+  return values.some(v=>v.includes(query));
+}
+
+function updateSearchButton(){
+  $("clearSearch").classList.toggle("hidden",!$("searchInput").value);
+}
+
+/* Order card */
+function orderCard(o){
+  const items = Array.isArray(o.items) ? o.items : [];
+  const delivery = o.fulfillment_type === "delivery";
+
+  return `
+  <article class="card">
+    <div class="head">
+      <div>
+        <div class="order-id">أوردر #${esc(orderNumber(o.id))}</div>
+        <div class="date">${esc(orderDate(o.created_at))}</div>
+      </div>
+      <span class="pill ${esc(o.status)}">${statusName(o.status)}</span>
+    </div>
+
+    <div class="info">
+      <div><span>اسم العميل</span><strong>${esc(o.customer_name)}</strong></div>
+      <div><span>رقم التليفون</span><strong dir="ltr">${esc(o.customer_phone)}</strong></div>
+      <div><span>نوع الطلب</span><strong>${delivery?"Delivery":"In Place"}</strong></div>
+      <div><span>العنوان</span><strong>${delivery?esc(o.delivery_area || "غير محدد"):"—"}</strong></div>
+    </div>
+
+    <div class="items">
+      ${
+        items.map(i=>`
+          <div class="item">
+            <span>${esc(i.name)} × ${Number(i.quantity || 0)}</span>
+            <strong>${money(itemSubtotal(i))}</strong>
+          </div>
+        `).join("") || "<div>لا توجد تفاصيل أصناف</div>"
+      }
+    </div>
+
+    <div class="foot">
+      <div class="total">الإجمالي: ${money(o.total)}</div>
+      <div class="status">
+        <button class="btn details-btn" data-details="${esc(o.id)}">تفاصيل الطلب</button>
+        <label class="muted">الحالة</label>
+        <select data-order="${esc(o.id)}">
+          <option value="new" ${o.status==="new"?"selected":""}>جديد</option>
+          <option value="preparing" ${o.status==="preparing"?"selected":""}>قيد التحضير</option>
+          <option value="completed" ${o.status==="completed"?"selected":""}>مكتمل</option>
+          <option value="cancelled" ${o.status==="cancelled"?"selected":""}>ملغي</option>
+        </select>
+        <button class="btn print" data-print="${esc(o.id)}">طباعة الفاتورة</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* Render lists */
+function renderOrders(){
+  const counts = {new:0,preparing:0,completed:0,cancelled:0};
+
+  allOrders.forEach(o=>{
+    if(Object.prototype.hasOwnProperty.call(counts,o.status)){
+      counts[o.status]++;
+    }
+  });
+
+  Object.keys(counts).forEach(status=>{
+    $("count-"+status).textContent = counts[status];
+  });
+
+  const query = getSearchValue();
+  const filtered = allOrders.filter(o=>
+    o.status === activeTab && matchesSearch(o,query)
+  );
+
+  $("sectionTitle").textContent = STATUS_INFO[activeTab].title;
+  $("sectionCount").textContent = filtered.length + " طلب";
+
+  if(filtered.length){
+    $("orders").innerHTML = filtered.map(orderCard).join("");
+  }else{
+    const message = query
+      ? "مش لاقيين طلب مطابق للبحث في القسم ده"
+      : STATUS_INFO[activeTab].empty;
+
+    $("orders").innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">${query?"🔎":STATUS_INFO[activeTab].icon}</div>
+        <strong>${message}</strong>
+      </div>`;
+  }
+
+  updateSearchButton();
+}
+
+/* Tabs */
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    activeTab = tab.dataset.tab;
+    document.querySelectorAll(".tab").forEach(t=>
+      t.classList.toggle("active",t===tab)
+    );
+    renderOrders();
+  });
+});
+
+/* Search events */
+$("searchInput").addEventListener("input",renderOrders);
+$("clearSearch").addEventListener("click",()=>{
+  $("searchInput").value = "";
+  renderOrders();
+  $("searchInput").focus();
+});
+
+/* Load orders */
+async function loadOrders(){
+  if(!token || loadingOrders) return;
+  loadingOrders = true;
+
+  try{
+    const d = await api("list");
+    const orders = Array.isArray(d.orders) ? d.orders : [];
+
+    for(const o of orders){
+      const id = String(o.id);
+      if(!firstLoad && !knownIds.has(id) && o.status==="new"){
+        notifyNew(o);
+      }
+      knownIds.add(id);
+    }
+
+    firstLoad = false;
+    allOrders = orders;
+    renderOrders();
+
+    $("connection").textContent = "متصل — تحديث تلقائي كل 5 ثواني";
+    $("lastUpdate").textContent =
+      "آخر تحديث: " + new Date().toLocaleTimeString("ar-EG");
+
+  }catch(e){
+    console.error("LOAD ORDERS ERROR:",e,e.data);
+    $("connection").textContent = "تعذر تحميل الطلبات: " + e.message;
+
+    $("orders").innerHTML = `
+      <div class="empty">
+        <strong>حصلت مشكلة أثناء تحميل الطلبات</strong>
+        <p>${esc(e.message)}</p>
+        <button class="btn print" id="retryLoad">إعادة المحاولة</button>
+      </div>`;
+
+    if(e.status===401){
+      logout(false);
+      $("loginError").textContent = "انتهت الجلسة. سجّل الدخول مرة أخرى.";
+    }
+  }finally{
+    loadingOrders = false;
+  }
+}
+
+/* Login */
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const pin = $("pin").value;
+  $("loginError").textContent = "";
+
+  if(!/^\d{4}$/.test(pin)){
+    $("loginError").textContent = "اكتب 4 أرقام بالضبط";
+    return;
+  }
+
+  $("loginBtn").disabled = true;
+  $("loginBtn").textContent = "جاري التحقق...";
+
+  try{
+    const d = await api("login",{pin});
+    if(!d.token) throw new Error("لم يتم استلام رمز الجلسة");
+
+    token = d.token;
+    sessionStorage.setItem(SESSION_KEY,token);
+    knownIds.clear();
+    allOrders = [];
+    firstLoad = true;
+
+    $("login").classList.add("hidden");
+
+    if("Notification" in window && Notification.permission==="default"){
+      Notification.requestPermission();
+    }
+
+    await loadOrders();
+    startPolling();
+
+  }catch(err){
+    $("loginError").textContent = err.message;
+  }finally{
+    $("loginBtn").disabled = false;
+    $("loginBtn").textContent = "دخول";
+    $("pin").value = "";
+  }
+});
+
+/* Update status */
+$("orders").addEventListener("change",async e=>{
+  const s = e.target.closest("select[data-order]");
+  if(!s) return;
+
+  const id = s.dataset.order;
+  const newStatus = s.value;
+  s.disabled = true;
+
+  try{
+    await api("update",{order_id:id,status:newStatus});
+    await loadOrders();
+  }catch(err){
+    alert(err.message);
+    await loadOrders();
+  }finally{
+    s.disabled = false;
+  }
+});
+
+/* Details modal */
+function openDetails(o){
+  const items = Array.isArray(o.items) ? o.items : [];
+  const delivery = o.fulfillment_type === "delivery";
+
+  $("modalTitle").textContent = `تفاصيل الأوردر #${orderNumber(o.id)}`;
+
+  const itemRows = items.map(i=>`
+    <div class="detail-item">
+      <div>
+        <strong>${esc(i.name)}</strong>
+        <small>الكمية: ${Number(i.quantity || 0)} × ${money(i.unit_price)}</small>
+      </div>
+      <strong>${money(itemSubtotal(i))}</strong>
+    </div>
+  `).join("") || `
+    <div class="detail-item">لا توجد تفاصيل أصناف مسجلة</div>`;
+
+  $("modalContent").innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-box">
+        <span>رقم الطلب</span>
+        <strong dir="ltr">#${esc(orderNumber(o.id))}</strong>
+      </div>
+      <div class="detail-box">
+        <span>حالة الطلب</span>
+        <strong>${statusName(o.status)}</strong>
+      </div>
+      <div class="detail-box">
+        <span>اسم العميل</span>
+        <strong>${esc(o.customer_name || "غير محدد")}</strong>
+      </div>
+      <div class="detail-box">
+        <span>رقم التليفون</span>
+        <strong dir="ltr">${esc(o.customer_phone || "غير محدد")}</strong>
+      </div>
+      <div class="detail-box">
+        <span>نوع الطلب</span>
+        <strong>${delivery?"Delivery":"In Place"}</strong>
+      </div>
+      <div class="detail-box">
+        <span>تاريخ الطلب</span>
+        <strong>${esc(orderDate(o.created_at))}</strong>
+      </div>
+      ${delivery?`
+        <div class="detail-box" style="grid-column:1/-1">
+          <span>منطقة التوصيل</span>
+          <strong>${esc(o.delivery_area || "غير محدد")}</strong>
+        </div>`:""}
+    </div>
+
+    <div class="modal-section-title">تفاصيل الأصناف</div>
+    <div class="detail-items">${itemRows}</div>
+
+    <div class="detail-total">
+      <span>الإجمالي النهائي</span>
+      <span>${money(o.total)}</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn print" id="modalPrint">طباعة الفاتورة</button>
+      <button class="btn details-btn" id="modalCloseBottom">إغلاق</button>
+    </div>
+  `;
+
+  $("detailsModal").classList.add("show");
+  document.body.classList.add("modal-open");
+
+  $("modalPrint").addEventListener("click",()=>printOrder(o));
+  $("modalCloseBottom").addEventListener("click",closeDetails);
+}
+
+function closeDetails(){
+  $("detailsModal").classList.remove("show");
+  document.body.classList.remove("modal-open");
+}
+
+$("closeModal").addEventListener("click",closeDetails);
+$("detailsModal").addEventListener("click",e=>{
+  if(e.target === $("detailsModal")) closeDetails();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closeDetails();
+});
+
+/* Professional receipt */
+function printOrder(o){
+  const w = window.open("","_blank","width=480,height=750");
+
+  if(!w){
+    alert("اسمح بفتح النوافذ المنبثقة للطباعة");
+    return;
+  }
+
+  const items = Array.isArray(o.items) ? o.items : [];
+  const logoUrl = new URL("./logo.png.jpg",window.location.href).href;
+
+  const rows = items.map(i=>`
+    <tr>
+      <td class="product">
+        ${esc(i.name)}
+        <small>${Number(i.quantity || 0)} × ${money(i.unit_price)}</small>
+      </td>
+      <td class="price">${money(itemSubtotal(i))}</td>
+    </tr>
+  `).join("");
+
+  const delivery = o.fulfillment_type === "delivery";
+
+  w.document.write(`
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SÜKARA Receipt</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;padding:25px;
+  color:#243d32;background:#fff;
+  font-family:Arial,sans-serif;
+}
+.receipt{max-width:430px;margin:auto}
+.brand{text-align:center;padding-bottom:20px;border-bottom:2px dashed #dce4dc}
+.logo{
+  width:65px;height:65px;object-fit:contain;
+  border-radius:50%;margin-bottom:8px
+}
+.brand h1{font-size:25px;margin:0;letter-spacing:2px}
+.brand p{font-size:11px;color:#718078;margin:5px 0 0}
+.receipt-title{text-align:center;margin:18px 0}
+.receipt-title h2{font-size:18px;margin:0 0 5px}
+.receipt-title span{font-size:11px;color:#879188}
+.meta{
+  background:#f6f8f5;border-radius:10px;
+  padding:13px;margin-bottom:16px
+}
+.meta-row{
+  display:flex;justify-content:space-between;
+  gap:12px;padding:5px 0;font-size:12px
+}
+.meta-row span{color:#7d887f}
+.meta-row strong{text-align:left;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse}
+thead th{
+  text-align:right;padding:10px 5px;
+  font-size:11px;color:#7b887e;
+  border-bottom:1px solid #dfe6df
+}
+thead th:last-child{text-align:left}
+td{
+  padding:12px 5px;border-bottom:1px solid #edf0eb;
+  font-size:12px;vertical-align:top
+}
+.product small{display:block;color:#8a948c;margin-top:5px;font-size:10px}
+.price{text-align:left;white-space:nowrap;font-weight:bold}
+.total{
+  margin-top:18px;padding:15px;
+  background:#244a3d;color:white;border-radius:10px;
+  display:flex;justify-content:space-between;
+  font-size:16px;font-weight:bold
+}
+.footer{
+  text-align:center;margin-top:25px;
+  padding-top:15px;border-top:2px dashed #dce4dc;
+  color:#78847b;font-size:11px;line-height:1.9
+}
+@media print{
+  body{padding:8px}
+  .receipt{max-width:100%}
+  @page{size:auto;margin:8mm}
+}
+</style>
+</head>
+<body>
+<div class="receipt">
+  <div class="brand">
+    <img class="logo" src="${esc(logoUrl)}" alt="Sukara"
+      onerror="this.style.display='none'">
+    <h1>SÜKARA</h1>
+    <p>سُــكَــــره | CAFE</p>
+  </div>
+
+  <div class="receipt-title">
+    <h2>فاتورة طلب</h2>
+    <span>شكراً لاختياركم سُكَــــره</span>
+  </div>
+
+  <div class="meta">
+    <div class="meta-row">
+      <span>رقم الطلب</span>
+      <strong dir="ltr">#${esc(orderNumber(o.id))}</strong>
+    </div>
+    <div class="meta-row">
+      <span>التاريخ</span>
+      <strong>${esc(orderDate(o.created_at))}</strong>
+    </div>
+    <div class="meta-row">
+      <span>اسم العميل</span>
+      <strong>${esc(o.customer_name || "غير محدد")}</strong>
+    </div>
+    <div class="meta-row">
+      <span>رقم التليفون</span>
+      <strong dir="ltr">${esc(o.customer_phone || "غير محدد")}</strong>
+    </div>
+    <div class="meta-row">
+      <span>نوع الطلب</span>
+      <strong>${delivery?"Delivery":"In Place"}</strong>
+    </div>
+    ${delivery?`
+      <div class="meta-row">
+        <span>منطقة التوصيل</span>
+        <strong>${esc(o.delivery_area || "غير محدد")}</strong>
+      </div>`:""}
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>الصنف</th><th>السعر</th></tr>
+    </thead>
+    <tbody>${rows || '<tr><td colspan="2">لا توجد أصناف</td></tr>'}</tbody>
+  </table>
+
+  <div class="total">
+    <span>الإجمالي</span>
+    <span>${money(o.total)}</span>
+  </div>
+
+  <div class="footer">
+    شكراً لزيارتكم سُكَــــره ☕<br>
+    نتمنى لكم يوماً سعيداً
+  </div>
+</div>
+<script>
+window.onload=()=>{
+  const imgs=Array.from(document.images);
+  Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{
+    img.onload=resolve;img.onerror=resolve;
+  }))).then(()=>window.print());
+};
+<\/script>
+</body>
+</html>
+  `);
+
+  w.document.close();
+}
+
+/* Buttons inside orders */
+$("orders").addEventListener("click",e=>{
+  const retry = e.target.closest("#retryLoad");
+  if(retry){loadOrders();return;}
+
+  const details = e.target.closest("[data-details]");
+  if(details){
+    const order = allOrders.find(x=>String(x.id)===details.dataset.details);
+    if(order) openDetails(order);
+    return;
+  }
+
+  const print = e.target.closest("[data-print]");
+  if(print){
+    const order = allOrders.find(x=>String(x.id)===print.dataset.print);
+    if(order) printOrder(order);
+  }
+});
+
+/* Manual refresh */
+$("refresh").addEventListener("click",loadOrders);
+
+/* Logout */
+function logout(showMessage=true){
+  stopPolling();
+  token = "";
+  sessionStorage.removeItem(SESSION_KEY);
+  knownIds.clear();
+  allOrders = [];
+  firstLoad = true;
+
+  $("orders").innerHTML = '<div class="empty">سجّل الدخول لعرض الطلبات</div>';
+  $("connection").textContent = "تم تسجيل الخروج";
+  $("lastUpdate").textContent = "";
+  $("login").classList.remove("hidden");
+
+  closeDetails();
+
+  if(showMessage) $("loginError").textContent = "";
+}
+
+$("logout").addEventListener("click",async()=>{
+  try{
+    if(token) await api("logout");
+  }catch(error){
+    console.error("LOGOUT ERROR:",error);
+  }
+  logout();
+});
+
+/* Restore session */
+if(token){
+  $("login").classList.add("hidden");
+  loadOrders().then(()=>{
+    if(token) startPolling();
+  });
+}
+</script>
+
+</body>
+</html>
